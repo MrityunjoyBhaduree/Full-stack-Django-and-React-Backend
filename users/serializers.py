@@ -6,22 +6,15 @@ from rest_framework_simplejwt.settings import api_settings
 from django.contrib.auth.models import update_last_login
 
 from users.models import User
+from abstract.serializers import AbstractSerializer
 
 
-class UserSerializer(serializers.ModelSerializer):
-  id = serializers.SerializerMethodField(method_name="get_id")
-  created = serializers.DateTimeField(read_only=True)
-  updated = serializers.DateTimeField(read_only=True)
-
-  @staticmethod
-  def get_id(obj):
-    return obj.public_id.hex
-
+class UserSerializer(AbstractSerializer):
 
   class Meta:
     model = User
-    fields = ["id", "username", "first_name", "last_name", "bio", "avatar",
-              "email", "is_active", "created", "updated"]
+    fields = ["username", "first_name", "last_name", "bio", "avatar",
+              "email", "is_active",]
     read_only_field = ["is_active"]
 
 

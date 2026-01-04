@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = User
-    fields = ["id", "username", "first_name", "last_name",
+    fields = ["id", "username", "first_name", "last_name", "bio", "avatar",
               "email", "is_active", "created", "updated"]
     read_only_field = ["is_active"]
 
@@ -39,7 +39,8 @@ class RegisterSerializer(UserSerializer):
   class Meta:
     model = User
     # List of all the fields that can be included in a request or a response
-    fields = ["id", "email", "username", "first_name", "last_name", "password"]
+    fields = ["id", "bio", "avatar", "email", "username", "first_name",
+              "last_name", "password"]
 
 
   def create(self, validated_data):

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     # Local app
     'users',
+    'post',
 ]
 
 MIDDLEWARE = [
@@ -115,11 +116,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -142,4 +143,24 @@ REST_FRAMEWORK = {
   ),
   'DEFAULT_FILTER_BACKENDS':
     ['django_filters.rest_framework.DjangoFilterBackend'],
+  'DEFAULT_PAGINATION_CLASS':
+  'rest_framework.pagination.LimitOffsetPagination',
+  'PAGE_SIZE': 15
+}
+
+from datetime import timedelta
+
+# jwt settings
+SIMPLE_JWT = {
+  "ACCESS_TOKEN_LIFETIME": timedelta(weeks=1),
+  "REFRESH_TOKEN_LIFETIME": timedelta(weeks=2),
+  "ROTATE_REFRESH_TOKENS": True,
+  "BLACKLIST_AFTER_ROTATION": True,
+  "UPDATE_LAST_LOGIN": True,
+  "AUTH_HEADER_TYPES": ("Bearer",),
+  "TOKEN_TYPE_CLAIM": "token_type",
+  "JTI_CLAIM": "jti",
+  "USER_ID_FIELD": "id",
+  "USER_ID_CLAIM": "user_id",
+  "SIGNING_KEY": SECRET_KEY,
 }

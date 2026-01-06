@@ -1,16 +1,18 @@
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework import viewsets, status
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework_simplejwt.views import TokenRefreshView
+
 from users.serializers import UserSerializer, RegisterSerializer, LoginSerializer
 from users.models import User
+from abstract.views import AbstractViewSet
 
 
 
-class UserAPIViewSet(viewsets.ModelViewSet):
+class UserAPIViewSet(AbstractViewSet):
   http_method_names = ["patch", "get"]
   permission_classes = [IsAuthenticated]
   serializer_class = UserSerializer
@@ -25,7 +27,6 @@ class UserAPIViewSet(viewsets.ModelViewSet):
     obj = User.objects.get_object_by_public_id(self.kwargs["pk"])
     self.check_object_permissions(self.request, obj)
     return obj
-
 
 class RegisterAPIViewSet(ViewSet):
   serializer_class = RegisterSerializer

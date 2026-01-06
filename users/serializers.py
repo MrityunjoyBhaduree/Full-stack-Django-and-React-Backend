@@ -6,21 +6,14 @@ from rest_framework_simplejwt.settings import api_settings
 from django.contrib.auth.models import update_last_login
 
 from users.models import User
+from abstract.serializers import AbstractSerializer
 
 
-class UserSerializer(serializers.ModelSerializer):
-  id = serializers.SerializerMethodField(method_name="get_id")
-  created = serializers.DateTimeField(read_only=True)
-  updated = serializers.DateTimeField(read_only=True)
-
-  @staticmethod
-  def get_id(obj):
-    return obj.public_id.hex
-
+class UserSerializer(AbstractSerializer):
 
   class Meta:
     model = User
-    fields = ["id", "username", "first_name", "last_name",
+    fields = ["id", "username", "first_name", "last_name", "bio", "avatar",
               "email", "is_active", "created", "updated"]
     read_only_field = ["is_active"]
 
@@ -39,7 +32,8 @@ class RegisterSerializer(UserSerializer):
   class Meta:
     model = User
     # List of all the fields that can be included in a request or a response
-    fields = ["id", "email", "username", "first_name", "last_name", "password"]
+    fields = ["id", "bio", "avatar", "email", "username", "first_name",
+              "last_name", "password"]
 
 
   def create(self, validated_data):

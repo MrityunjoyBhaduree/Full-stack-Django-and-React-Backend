@@ -25,7 +25,7 @@ class PostSerializer(AbstractSerializer):
   @staticmethod
   def get_author(obj):
     author = {
-      "id": obj.author.public_id,
+      "id": obj.author.public_id.hex,
       "username": obj.author.username,
       "first_name": obj.author.first_name,
       "last_name": obj.author.last_name,

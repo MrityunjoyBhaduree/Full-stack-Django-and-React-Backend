@@ -11,6 +11,14 @@ from post.serializers import PostSerializer
 
 
 class PostAPIViewSet(AbstractViewSet):
+  """
+  POST /api/v1/post/              → Create a post / List all posts
+  GET  /api/v1/post/              → List all posts
+  GET  /api/v1/post/<post_id>/    → Retrieve a single post
+  PATCH /api/v1/post/<post_id>/   → Update a post
+  DELETE /api/v1/post/<post_id>/  → Delete a post
+
+  """
   http_method_names = ["post", "get", "put", "delete"]
   permission_classes = [IsAuthenticated]
   serializer_class = PostSerializer

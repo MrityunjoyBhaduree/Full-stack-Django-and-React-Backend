@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from abstract.views import AbstractViewSet
 from post.models import Post
 from post.serializers import PostSerializer
+from CoreRoot.permissions import UserPermission
 
 
 
@@ -20,7 +21,7 @@ class PostAPIViewSet(AbstractViewSet):
 
   """
   http_method_names = ["post", "get", "put", "delete"]
-  permission_classes = [IsAuthenticated]
+  permission_classes = [UserPermission]
   serializer_class = PostSerializer
 
 
@@ -51,7 +52,7 @@ class PostAPIViewSet(AbstractViewSet):
     instance = self.get_object()
     if instance is not None:
       self.perform_destroy(instance)
-      return Response({"message": "Post Deleted."}, status=status.HTTP_200_OK)
+      return Response({"message": "Post Deleted."}, status=status.HTTP_204_NO_CONTENT)
     return Response({"message": "Unable to delete the post."},
                     status=status.HTTP_400_BAD_REQUEST)
 

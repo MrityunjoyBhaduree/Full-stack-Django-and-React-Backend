@@ -66,6 +66,6 @@ class CommentAPIViewSet(AbstractViewSet):
     instance = self.get_object()
     if instance is not None:
       self.perform_destroy(instance)
-      return Response({"message": "Comment Deleted."}, status=status.HTTP_200_OK)
+      return Response({"message": "Comment Deleted."}, status=status.HTTP_204_NO_CONTENT)
     return Response({"message": "Unable to delete comment"},
                     status=status.HTTP_400_BAD_REQUEST)

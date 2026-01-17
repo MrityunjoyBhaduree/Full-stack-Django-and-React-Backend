@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # 3rd party app
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
 
     # Local app
     'users',
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -129,6 +131,9 @@ USE_TZ = False
 
 STATIC_URL = 'static/'
 
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "uploads"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -165,3 +170,11 @@ SIMPLE_JWT = {
   "USER_ID_CLAIM": "user_id",
   "SIGNING_KEY": SECRET_KEY,
 }
+
+CORS_ALLOWED_ORIGINS = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+]
+
+# Configuring the default avatar
+DEFAULT_AVATAR_URL = "https://api.dicebear.com/9.x/bottts/svg"

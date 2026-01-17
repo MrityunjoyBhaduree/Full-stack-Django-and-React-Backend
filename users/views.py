@@ -28,6 +28,25 @@ class UserAPIViewSet(AbstractViewSet):
     self.check_object_permissions(self.request, obj)
     return obj
 
+  def partial_update(self, request, *args, **kwargs):
+    """
+    Partially update a user profile.
+    Allows updating first_name, last_name, bio
+    :param request:
+    :param args:
+    :param kwargs:
+    :return:
+    """
+    instance = self.get_object()
+    serializer = self.get_serializer(
+      instance,
+      data=request.data,
+      partial=True
+    )
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 class RegisterAPIViewSet(ViewSet):
   serializer_class = RegisterSerializer
   permission_classes = [AllowAny]
@@ -45,7 +64,7 @@ class RegisterAPIViewSet(ViewSet):
     return Response({
       "user": serializer.data,
       "refresh": res["refresh"],
-      "token": res["access"]
+      "access": res["access"]
     }, status=status.HTTP_201_CREATED
     )
 

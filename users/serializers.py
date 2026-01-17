@@ -1,4 +1,5 @@
 from typing import Any
+from django.conf import settings
 
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -11,11 +12,42 @@ from abstract.serializers import AbstractSerializer
 
 class UserSerializer(AbstractSerializer):
 
+  avatar = serializers.SerializerMethodField(method_name="get_avatar")
+  posts_count = serializers.SerializerMethodField(method_name="get_posts_count")
+
+  @staticmethod
+  def get_posts_count(obj):
+    return obj.post_set.all().count()
+
+  def get_avatar(self, obj):
+    request = self.context.get("request")
+    if obj.avatar and hasattr(obj.avatar, "url"):
+      if request:
+        return request.build_absolute_uri(obj.avatar.url)
+      return obj.avatar.url
+    # fallback default
+    if request:
+      return request.build_absolute_uri(settings.DEFAULT_AVATAR_URL)
+    return settings.DEFAULT_AVATAR_URL
+
   class Meta:
     model = User
-    fields = ["id", "username", "first_name", "last_name", "bio", "avatar",
-              "email", "is_active", "created", "updated"]
+    fields = ["id", "username", "name", "first_name", "last_name", "bio", "avatar",
+              "email", "is_active", "created", "updated", "posts_count"]
     read_only_field = ["is_active"]
+
+
+  def update(self, instance, validated_data):
+    instance.first_name = validated_data.get("first_name", instance.first_name)
+    instance.last_name = validated_data.get("last_name", instance.last_name)
+    instance.bio = validated_data.get("bio", instance.bio)
+    instance.avatar = validated_data.get("avatar", instance.avatar)
+    # Only update avatar if a new file is provided
+    avatar = validated_data.get("avatar")
+    if avatar:
+        instance.avatar = avatar
+    instance.save()
+    return instance
 
 
 class RegisterSerializer(UserSerializer):

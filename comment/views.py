@@ -2,6 +2,7 @@ from django.http.response import Http404
 
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import action
 
 from abstract.views import AbstractViewSet
 from comment.models import Comment
@@ -69,3 +70,24 @@ class CommentAPIViewSet(AbstractViewSet):
       return Response({"message": "Comment Deleted."}, status=status.HTTP_204_NO_CONTENT)
     return Response({"message": "Unable to delete comment"},
                     status=status.HTTP_400_BAD_REQUEST)
+
+
+  @action(methods=["post"], detail=True)
+  def like(self, request, *args, **kwargs):
+    comment = self.get_object()
+    user = self.request.user
+
+    user.like_comment(comment)
+    serializer = self.serializer_class(comment)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+  @action(methods=["post"], detail=True)
+  def remove_like(self, request, *args, **kwargs):
+    comment = self.get_object()
+    user = self.request.user
+
+    user.remove_like_comment(comment)
+
+    serializer = self.serializer_class(comment)
+
+    return Response(serializer.data, status=status.HTTP_200_OK)

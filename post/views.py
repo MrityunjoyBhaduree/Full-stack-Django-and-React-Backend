@@ -26,7 +26,15 @@ class PostAPIViewSet(AbstractViewSet):
 
 
   def get_queryset(self):
-    return Post.objects.all()
+    queryset = Post.objects.all()
+
+    author_public_id = self.request.query_params.get("author__public_id")
+
+    if author_public_id:
+      queryset = queryset.filter(author__public_id=author_public_id)
+
+    return queryset
+    # return Post.objects.all()
 
   def get_object(self):
     obj = Post.objects.get_object_by_public_id(self.kwargs["pk"])

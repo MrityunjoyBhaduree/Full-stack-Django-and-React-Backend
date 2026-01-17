@@ -3,6 +3,7 @@ from rest_framework.exceptions import ValidationError
 
 from abstract.serializers import AbstractSerializer
 from post.models import Post
+from django.conf import settings
 
 
 class PostSerializer(AbstractSerializer):
@@ -22,19 +23,33 @@ class PostSerializer(AbstractSerializer):
   def get_likes_count(obj):
     return obj.liked_by.count()
 
-  @staticmethod
-  def get_author(obj):
+
+  def get_author(self, obj):
+    request = self.context.get("request")
+    avatar_url = None
+    if obj.author.avatar and hasattr(obj.author.avatar, "url"):
+        if request:
+            avatar_url = request.build_absolute_uri(obj.author.avatar.url)
+        else:
+            avatar_url = obj.author.avatar.url
+    else:
+        if request:
+            avatar_url = request.build_absolute_uri(settings.DEFAULT_AVATAR_URL)
+        else:
+            avatar_url = settings.DEFAULT_AVATAR_URL
+
     author = {
-      "id": obj.author.public_id.hex,
-      "username": obj.author.username,
-      "first_name": obj.author.first_name,
-      "last_name": obj.author.last_name,
-      "bio": obj.author.bio,
-      "avatar": obj.author.avatar if obj.author.avatar else None,
-      "email": obj.author.email,
-      "is_active": obj.author.is_active,
-      "created": obj.author.created,
-      "updated": obj.author.updated
+        "id": obj.author.public_id.hex,
+        "username": obj.author.username,
+        "first_name": obj.author.first_name,
+        "last_name": obj.author.last_name,
+        "name": obj.author.name,
+        "bio": obj.author.bio,
+        "avatar": avatar_url,
+        "email": obj.author.email,
+        "is_active": obj.author.is_active,
+        "created": obj.author.created,
+        "updated": obj.author.updated
     }
     return author
 

@@ -190,3 +190,18 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # Configuring the default avatar
 DEFAULT_AVATAR_URL = "https://api.dicebear.com/9.x/bottts/svg"
+
+# settings.py
+
+# Allow Vercel to send requests to Django
+CORS_ALLOWED_ORIGINS = [
+    "https://postly-henna.vercel.app",
+]
+
+# Required for POST/PUT requests from Vercel to work
+CSRF_TRUSTED_ORIGINS = [
+    "https://postly-henna.vercel.app",
+]
+
+# Since you are using Render, ensure this is set for HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

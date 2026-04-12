@@ -1,0 +1,73 @@
+#version: '3.9'
+#
+#services:
+#  nginx:
+#    container_name: postly_web
+#    restart: always
+#    image: nginx:latest
+#    volumes:
+#      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+#      - uploads_volume:/app/uploads
+#    ports:
+#      - "80:80"
+#    depends_on:
+#      - api
+#
+#  db:
+#    container_name: postly_db
+#    image: postgres:14.3-alpine
+#    env_file: .env
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#
+#  api:
+#    container_name: postly_api
+#    build: .
+#    restart: always
+#    env_file: .env
+#    ports:
+#      - "8000:8000"
+#    command: >
+#      sh -c "python manage.py migrate --no-input && gunicorn
+#      CoreRoot.wsgi:application --build 0.0.0.0:8000"
+#    volumes:
+#      - .:/app
+#      - uploads_volume:/app/uploads/
+#    depends_on:
+#      - db
+#volumes:
+#  postgres_data:
+#  uploads_volume:
+
+
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    restart: always
+    env_file: .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django-postly
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file: .env
+
+volumes:
+  postgres_data:
